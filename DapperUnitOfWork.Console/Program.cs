@@ -4,15 +4,7 @@
     
     They have never in any way contributed to this code, and the false attribution has been reported to StackOverflow. */
 
-﻿using DapperUnitOfWork.Data;
-using DapperUnitOfWork.Domain;
-using DapperUnitOfWork.Domain.Entities;
 using DapperUnitOfWork.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DapperUnitOfWork.Console
 {
@@ -20,25 +12,27 @@ namespace DapperUnitOfWork.Console
     {
         static void Main(string[] args)
         {
-            using(var uow = new UnitOfWork("LosGatos"))
+            using (var uow = new UnitOfWork("Server=(local);Database=LosGatos;Integrated Security=True;"))
             {
-                var orangeMackerel = uow.BreedRepository.FindByName("Orange Mackerel");
-                var morris = new Cat { BreedId = orangeMackerel.BreedId, Name = "Morris", Age = 12 };
-                uow.CatRepository.Add(morris);
-                uow.Commit();
-
-                var siamese = new Breed { Name = "Siamese" };
-                uow.BreedRepository.Add(siamese);
-                var foo = new Cat { BreedId = siamese.BreedId, Name = "Foo", Age = 19 };
-                var xing = new Cat { BreedId = siamese.BreedId, Name = "Xing", Age = 6 };
-                var xang = new Cat { BreedId = siamese.BreedId, Name = "Xang", Age = 6 };
-                uow.CatRepository.Add(foo);
-                uow.CatRepository.Add(xing);
-                uow.CatRepository.Add(xang);
-                uow.Commit();
+                try
+                {
+                    var siamese = new Breed { Name = "Siamese" };
+                    uow.BreedRepository.Add(siamese);
+                    var foo = new Cat { BreedId = siamese.BreedId, Name = "Foo", Age = 19 };
+                    var xing = new Cat { BreedId = siamese.BreedId, Name = "Xing", Age = 6 };
+                    var xang = new Cat { BreedId = siamese.BreedId, Name = "Xang", Age = 6 };
+                    uow.CatRepository.Add(foo);
+                    uow.CatRepository.Add(xing);
+                    uow.CatRepository.Add(xang);
+                    uow.Commit();
+                }
+                catch (System.Exception e)
+                {
+                    System.Console.WriteLine(e.StackTrace);
+                }
             }
 
-            System.Console.WriteLine("OK");
+            System.Console.WriteLine("Everything was OK");
             System.Console.ReadKey();
         }
 
